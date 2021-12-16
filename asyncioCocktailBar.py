@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 import time
 import asyncio
 
@@ -56,7 +55,7 @@ class Serveur:
         for commande in self.commandes:
             print("[{}] je prends commande de '{}'    {}".format(self.__class__.__name__,commande,round(time.time()-initial_time,3)))
             
-            self.pic.embrocher(commande)
+            await self.pic.embrocher(commande)
             print("[{}] postit '{}' embroché    {}".format(self.pic.__class__.__name__,commande,round(time.time()-initial_time,3)))
             print("[{}] état={}    {}".format(self.pic.__class__.__name__,self.pic.state,round(time.time()-initial_time,3)))
         self.commandes.reverse()  
@@ -72,7 +71,7 @@ class Serveur:
         while self.bar.state != []:
             
             
-            plateau=self.bar.evacuer()
+            plateau=await self.bar.evacuer()
             print("[{}] '{}' evacué    {}".format(self.bar.__class__.__name__,plateau,round(time.time()-initial_time,3)))
             
             #service
@@ -103,7 +102,7 @@ class Barman:
             
             #il libére le pic
             print("[{}] état={}    {}".format(self.pic.__class__.__name__,self.pic.state,round(time.time()-initial_time,3)))
-            postit=self.pic.liberer()
+            postit=await self.pic.liberer()
             print("[{}] postit '{}' libéré    {}".format(self.pic.__class__.__name__,postit,round(time.time()-initial_time,3)))
             
             #fabrication
@@ -111,7 +110,7 @@ class Barman:
             print("[{}] je termine la fabrication de '{}'    {}".format(self.__class__.__name__,postit,round(time.time()-initial_time,3)))
             plateau=postit
             
-            self.bar.recevoir(plateau)
+            await self.bar.recevoir(plateau)
             print("[{}] '{}' reçu    {}".format(self.bar.__class__.__name__,plateau,round(time.time()-initial_time,3)))
             print("[{}] état={}    {}".format(self.bar.__class__.__name__,plateau,self.bar.state,round(time.time()-initial_time,3)))
             #print("#########")   
@@ -119,42 +118,6 @@ class Barman:
         print("[{}] état={}    {}".format(self.pic.__class__.__name__,self.pic.state,round(time.time()-initial_time,3))) 
         print('pic est vide    {}'.format(round(time.time()-initial_time,3)))    
             
-        
-"""
-$ ./cocktail "4 mojito" "2 tequila sunrise"
-[Barman] prêt pour le service !
-[Serveur] prêt pour le service
-[Serveur] je prends commande de '2 tequila sunrise'
-[Pic] post-it '2 tequila sunrise' embroché
-[Pic] état=['2 tequila sunrise']
-[Serveur] je prends commande de '4 mojito'
-[Pic] post-it '4 mojito' embroché
-[Pic] état=['2 tequila sunrise', '4 mojito']
-[Serveur] il n'y a plus de commande à prendre
-plus de commande à prendre
-[Pic] état=['2 tequila sunrise', '4 mojito']
-[Pic] post-it '4 mojito' libéré
-[Bareman] je commence la fabrication de '4 mojito'
-[Bareman] je termine la fabrication de '4 mojito'
-[Bar] '4 mojito' reçu
-[Bar] état=['4 mojito']
-[Pic] état=['2 tequila sunrise']
-[Pic] post-it '2 tequila sunrise' libéré
-[Bareman] je commence la fabrication de '2 tequila sunrise'
-[Bareman] je termine la fabrication de '2 tequila sunrise'
-[Bar] '2 tequila sunrise' reçu
-[Bar] état=['4 mojito', '2 tequila sunrise']
-[Pic] état=[]
-Pic est vide
-[Bar] état=['4 mojito', '2 tequila sunrise']
-[Bar] '2 tequila sunrise' évacué
-[Serveur] je sers '2 tequila sunrise'
-[Bar] état=['4 mojito']
-[Bar] '4 mojito' évacué
-[Serveur] je sers '4 mojito'
-[Bar] état=[]
-Bar est vide
-"""
 import asyncio
 
 async def main(commandes):
@@ -178,66 +141,15 @@ async def main(commandes):
     await task3
     await task4
     await task5
-"""
-    server.ready()
-    barman.ready()
 
-    server.prendre_commande() 
-
-    barman.preparer()
-
-    server.servir()
-    final_time=time.time()
-    print(final_time-initial_time)"""
 
 if __name__=='__main__':
-    commandes=['coka{} litres'.format(i) for i in range(1000)]
+    commandes_ex1=['coka{} litres'.format(i) for i in range(1000)]
+    commandes_ex2=["4 mojito","2 tequila sunrise"]
     initial_time=time.time()
 
-    asyncio.run(main(commandes))
+    asyncio.run(main(commandes_ex1))
 
     final_time=time.time()
     print(final_time-initial_time)
-
-
-"""
-initial_time=time.time()
-p= Pic()
-b=Bar()
-commandes=['coka{} litres'.format(i) for i in range(1000)]
-
-server=Serveur(p, b, commandes)
-barman=Barman(p,b)
-
-
-
-server.ready()
-barman.ready()
-
-server.prendre_commande() 
-
-barman.preparer()
-
-server.servir()
-final_time=time.time()
-print(final_time-initial_time)
-
-initial_time=time.time()
-p= Pic()
-b=Bar()
-commandes2=["4 mojito","2 tequila sunrise"]
-
-server=Serveur(p, b, commandes2)
-barman=Barman(p,b)
-
-
-
-server.ready()
-barman.ready()
-
-server.prendre_commande() 
-
-barman.preparer()
-
-server.servir()
-"""
+  
