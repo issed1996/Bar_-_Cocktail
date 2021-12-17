@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-
+import sys
 import time
 
 
@@ -37,11 +37,12 @@ class Bar(Accessoire):
         
 
 class Serveur:
-    def __init__(self,pic,bar,commandes):
+    def __init__(self,pic,bar,commandes,verbosity=0):
         self.pic=pic
         self.bar=bar
         self.commandes=commandes
         self.timer=time.time()
+        self.verbosity=verbosity
     
     def ready(self):
         message="[{}] prét pour le service    {}".format(self.__class__.__name__,round(time.time()-initial_time,3)) 
@@ -57,38 +58,41 @@ class Serveur:
             print("[{}] je prends commande de '{}'    {}".format(self.__class__.__name__,commande,round(time.time()-initial_time,3)))
             
             self.pic.embrocher(commande)
-            print("[{}] postit '{}' embroché    {}".format(self.pic.__class__.__name__,commande,round(time.time()-initial_time,3)))
-            print("[{}] état={}    {}".format(self.pic.__class__.__name__,self.pic.state,round(time.time()-initial_time,3)))
+            if self.verbosity in [1,2]:
+                print("[{}] postit '{}' embroché    {}".format(self.pic.__class__.__name__,commande,round(time.time()-initial_time,3)))
+                if self.verbosity==2:
+                    print("[{}] état={}    {}".format(self.pic.__class__.__name__,self.pic.state,round(time.time()-initial_time,3)))
         self.commandes.reverse()  
         
-        print("[{}] il n'y a plus de commande à prendre plus de commande à prendre    {}".format(self.__class__.__name__,round(time.time()-initial_time,3)))
+        print("[{}] il n'y a plus de commande à prendre    {}".format(self.__class__.__name__,round(time.time()-initial_time,3)))
         
         
   
         
     def servir(self):
         """ Prend un plateau sur le bar. """
-        print("[{}] état={}    {}".format(self.bar.__class__.__name__,self.bar.state,round(time.time()-initial_time,3)))
-        while self.bar.state != []:
-            
-            
+        if self.verbosity ==2:
+            print("[{}] état={}    {}".format(self.bar.__class__.__name__,self.bar.state,round(time.time()-initial_time,3)))
+        while self.bar.state != []:                        
             plateau=self.bar.evacuer()
-            print("[{}] '{}' evacué    {}".format(self.bar.__class__.__name__,plateau,round(time.time()-initial_time,3)))
+            if self.verbosity in [1,2]:
+                print("[{}] '{}' evacué    {}".format(self.bar.__class__.__name__,plateau,round(time.time()-initial_time,3)))
             
             #service
             print("[{}] je sers '{}'    {}".format(self.__class__.__name__,plateau,round(time.time()-initial_time,3)))
-            print("[{}] état={}    {}".format(self.bar.__class__.__name__,self.bar.state,round(time.time()-initial_time,3)))
-            
-        print("bar est vide    {}".format(round(time.time()-initial_time,3)))    
+            if self.verbosity == 2 :
+                print("[{}] état={}    {}".format(self.bar.__class__.__name__,self.bar.state,round(time.time()-initial_time,3)))
+        if self.verbosity in [1,2]:    
+            print("bar est vide    {}".format(round(time.time()-initial_time,3)))    
             
         
         
 
 class Barman:
-    def __init__(self,pic,bar):
+    def __init__(self,pic,bar,verbosity):
         self.pic=pic
         self.bar=bar
-    
+        self.verbosity=verbosity
     def ready(self):
         message="[{}] prét pour le service    {}".format(self.__class__.__name__,round(time.time()-initial_time,3))
         print(message)    
@@ -102,9 +106,11 @@ class Barman:
             
             
             #il libére le pic
-            print("[{}] état={}    {}".format(self.pic.__class__.__name__,self.pic.state,round(time.time()-initial_time,3)))
+            if self.verbosity==2:
+                print("[{}] état={}    {}".format(self.pic.__class__.__name__,self.pic.state,round(time.time()-initial_time,3)))
             postit=self.pic.liberer()
-            print("[{}] postit '{}' libéré    {}".format(self.pic.__class__.__name__,postit,round(time.time()-initial_time,3)))
+            if self.verbosity in [1,2]:
+                print("[{}] postit '{}' libéré    {}".format(self.pic.__class__.__name__,postit,round(time.time()-initial_time,3)))
             
             #fabrication
             print("[{}] je commence la fabrication de '{}'    {}".format(self.__class__.__name__,postit,round(time.time()-initial_time,3)))
@@ -112,12 +118,16 @@ class Barman:
             plateau=postit
             
             self.bar.recevoir(plateau)
-            print("[{}] '{}' reçu    {}".format(self.bar.__class__.__name__,plateau,round(time.time()-initial_time,3)))
-            print("[{}] état={}    {}".format(self.bar.__class__.__name__,plateau,self.bar.state,round(time.time()-initial_time,3)))
+            if self.verbosity in [1,2]:
+                print("[{}] '{}' reçu    {}".format(self.bar.__class__.__name__,plateau,round(time.time()-initial_time,3)))
+                if self.verbosity == 2:
+                    print("[{}] état={}    {}".format(self.bar.__class__.__name__,plateau,self.bar.state,round(time.time()-initial_time,3)))
             #print("#########")   
-        print("[{}] état={}    {}".format(self.bar.__class__.__name__,self.bar.state,round(time.time()-initial_time,3)))  
-        print("[{}] état={}    {}".format(self.pic.__class__.__name__,self.pic.state,round(time.time()-initial_time,3))) 
-        print('pic est vide    {}'.format(round(time.time()-initial_time,3)))    
+        if self.verbosity == 2:
+            print("[{}] état={}    {}".format(self.bar.__class__.__name__,self.bar.state,round(time.time()-initial_time,3)))  
+            print("[{}] état={}    {}".format(self.pic.__class__.__name__,self.pic.state,round(time.time()-initial_time,3))) 
+        if self.verbosity in [1,2]:
+            print('pic est vide    {}'.format(round(time.time()-initial_time,3)))    
             
         
 """
@@ -156,14 +166,14 @@ Pic est vide
 Bar est vide
 """
 
-def main(commandes):
+def main(commandes,verbosity):
 
 
     p= Pic()
     b=Bar()
 
-    server=Serveur(p, b, commandes)
-    barman=Barman(p,b)
+    server=Serveur(p, b, commandes,verbosity)
+    barman=Barman(p,b,verbosity)
 
 
 
@@ -176,56 +186,49 @@ def main(commandes):
 
     server.servir()
     final_time=time.time()
-    print(final_time-initial_time)
+    #print(final_time-initial_time)
+
+
+import getopt
+import sys
+
+def parse_com_line():
+
+    argv = sys.argv[1:]
+    try:
+        opts, args = getopt.getopt(argv, 'cv:d', ['help', 'my_file='])
+        return opts,args
+        
+    except getopt.GetoptError:
+        # Print a message or do something useful
+        print('Something went wrong!')
+        sys.exit(2)   
 
 if __name__=='__main__':
-    commandes=['coka{} litres'.format(i) for i in range(1000)]
+    #commandes_ex1=['coka{} litres'.format(i) for i in range(1000)]
+    #commandes_ex2=["4 mojito","2 tequila sunrise"]
+    #verbosity= 1
+    
+
+    #extract verbosity if its given and commandes from commandline
+    a,b=parse_com_line()
+    try:
+        verbosity=int(a[0][-1])
+    except:pass    
+    commandes=b
+
+    #start service
     initial_time=time.time()
 
-    main(commandes)
+    main(commandes,verbosity)
 
     final_time=time.time()
-    print(final_time-initial_time)
+    print('runtime: {}'.format(round(final_time-initial_time,4)))
+
+    
 
 
-"""
-initial_time=time.time()
-p= Pic()
-b=Bar()
-commandes=['coka{} litres'.format(i) for i in range(1000)]
+           
 
-server=Serveur(p, b, commandes)
-barman=Barman(p,b)
+   
 
-
-
-server.ready()
-barman.ready()
-
-server.prendre_commande() 
-
-barman.preparer()
-
-server.servir()
-final_time=time.time()
-print(final_time-initial_time)
-
-initial_time=time.time()
-p= Pic()
-b=Bar()
-commandes2=["4 mojito","2 tequila sunrise"]
-
-server=Serveur(p, b, commandes2)
-barman=Barman(p,b)
-
-
-
-server.ready()
-barman.ready()
-
-server.prendre_commande() 
-
-barman.preparer()
-
-server.servir()
-"""
