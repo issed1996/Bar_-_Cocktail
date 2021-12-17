@@ -189,7 +189,7 @@ if __name__=='__main__':
     asyncio.run(main(commandes,verbosity))
 
     final_time=time.time()
-    print('runtime: {}'.format(round(final_time-initial_time,4)))
+    #print('runtime: {}'.format(round(final_time-initial_time,4)))
 
     
 
