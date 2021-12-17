@@ -223,7 +223,7 @@ if __name__=='__main__':
     main(commandes,verbosity)
 
     final_time=time.time()
-    print('runtime: {}'.format(round(final_time-initial_time,4)))
+    #print('runtime: {}'.format(round(final_time-initial_time,4)))
 
     
 
