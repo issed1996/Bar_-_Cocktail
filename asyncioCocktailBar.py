@@ -63,6 +63,7 @@ class Serveur:
                 print("[{}] postit '{}' embroché    {}".format(self.pic.__class__.__name__,commande,round(time.time()-initial_time,3)))
                 if self.verbosity==2:
                     print("[{}] état={}    {}".format(self.pic.__class__.__name__,self.pic.state,round(time.time()-initial_time,3)))
+            await asyncio.sleep(0)
         self.commandes.reverse()  
         
         print("[{}] il n'y a plus de commande à prendre    {}".format(self.__class__.__name__,round(time.time()-initial_time,3)))
@@ -76,6 +77,7 @@ class Serveur:
             print("[{}] état={}    {}".format(self.bar.__class__.__name__,self.bar.state,round(time.time()-initial_time,3)))
         while self.bar.state != []:                        
             plateau= await self.bar.evacuer()
+            await asyncio.sleep(0)
             if self.verbosity in [1,2]:
                 print("[{}] '{}' evacué    {}".format(self.bar.__class__.__name__,plateau,round(time.time()-initial_time,3)))
             
@@ -110,6 +112,7 @@ class Barman:
             if self.verbosity==2:
                 print("[{}] état={}    {}".format(self.pic.__class__.__name__,self.pic.state,round(time.time()-initial_time,3)))
             postit=await self.pic.liberer()
+            await asyncio.sleep(0)
             if self.verbosity in [1,2]:
                 print("[{}] postit '{}' libéré    {}".format(self.pic.__class__.__name__,postit,round(time.time()-initial_time,3)))
             
@@ -119,6 +122,7 @@ class Barman:
             plateau=postit
             
             await self.bar.recevoir(plateau)
+            await asyncio.sleep(0)
             if self.verbosity in [1,2]:
                 print("[{}] '{}' reçu    {}".format(self.bar.__class__.__name__,plateau,round(time.time()-initial_time,3)))
                 if self.verbosity == 2:
@@ -189,9 +193,11 @@ if __name__=='__main__':
     asyncio.run(main(commandes,verbosity))
 
     final_time=time.time()
-    #print('runtime: {}'.format(round(final_time-initial_time,4)))
+    print(final_time-initial_time)
 
-    
+    #print(commandes)
+
+
 
 
            
