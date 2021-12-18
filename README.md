@@ -40,17 +40,16 @@ examples:
 
 python asyncioCocktailBar.py -v 0 -c "4 mojito" "2 tequila sunrise"
 qui donne:
-[Serveur] prét pour le service    0.0
-[Barman] prét pour le service    0.0
-[Serveur] je prends commande de '2 tequila sunrise'    0.0
-[Serveur] je prends commande de '4 mojito'    0.0
-[Serveur] il n'y a plus de commande à prendre    0.0
-[Barman] je commence la fabrication de '4 mojito'    0.0
-[Barman] je termine la fabrication de '4 mojito'    0.0
-[Barman] je commence la fabrication de '2 tequila sunrise'    0.0
-[Barman] je termine la fabrication de '2 tequila sunrise'    0.0
-[Serveur] je sers '2 tequila sunrise'    0.0
-[Serveur] je sers '4 mojito'    0.0
+[Serveur] prét pour le service    0.002
+[Barman] prét pour le service    0.002
+[Serveur] je prends commande de '2 tequila sunrise'    0.002
+[Serveur] je prends commande de '4 mojito'    0.003
+[Barman] je commence la fabrication de '2 tequila sunrise'    0.003
+[Barman] je termine la fabrication de '2 tequila sunrise'    0.003
+[Serveur] il n'y a plus de commande à prendre    0.003
+[Barman] je commence la fabrication de '4 mojito'    0.004
+[Barman] je termine la fabrication de '4 mojito'    0.004
+
 
 
 
